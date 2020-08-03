@@ -8,7 +8,7 @@ app.set('view engine', 'ejs');
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "9sm5xK": "http://www.google.com",
 };
 const generateRandomString = () => {
   let randomStr = "";
@@ -29,12 +29,21 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);
-  res.send("Ok");
+  const longUrl = req.body.longURL;
+  const shortURL = generateRandomString(req.body);
+  urlDatabase[shortURL] = longUrl;
+  res.redirect(303, `/urls/${shortURL}`);
 });
 
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  console.log(req.body);
+  const longURL = urlDatabase[req.params.shortURL];
+  console.log(longURL);
+  res.redirect(302, longURL);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -53,3 +62,14 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
+
+
+/* TODOS
+
+At this point we should see cURL and our browser make redirected GET requests to the longURL. We can now review our code and consider edge cases such as:
+
+What would happen if a client requests a non-existent shortURL?
+What happens to the urlDatabase when the server is restarted?
+What type of status code do our redirects have? What does this status code mean?
+
+*/
