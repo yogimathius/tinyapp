@@ -27,20 +27,30 @@
 			<tbody>
 				<% for(let url in urls) { %>
 				<tr>
-					<td><%= url %></td>
-					<td><%= urls[url] %></td>
+					<td><a href="<%= urls[url].longURL %>"><%= url %></a></td>
+					<% if (!user) { %>
+					<td>Login to View</td>
+					<td>Login to Edit</td>
+					<td>Login to Delete</td>
+					<% } else { %>
+					<td><a href="<%= urls[url].longURL %>"><%= url %></a></td>
+					<td><%= urls[url].longURL %></td>
 					<td>
-						<a href="/urls/<%= url %>/" method="POST" action="" class="btn btn-outline-primary">Edit</form>
+						<a href="/urls/<%= url %>/">edit</a>
 					</td>
+
 					<td>
 						<form method="POST" action="/urls/<%= url %>/delete"><button class="btn btn-outline-danger">Delete</button>
 						</form>
 					</td>
+					<% } %>
 				</tr>
 				<% } %>
 			</tbody>
 		</table>
-		<a href="#" class="btn btn-primary" role="button">Shorten Url</a>
+		<form class="form-inline" method="GET" action="/urls/new"> <button class="btn btn-primary">Shorten
+				Url</button>
+		</form>
 	</main>
 	<!-- Bootstrap JS -->
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
