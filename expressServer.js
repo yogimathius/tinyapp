@@ -206,8 +206,8 @@ app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get('/"', (req, res) => {
-  res.redirect('/urls');
+app.get('/', (req, res) => {
+  res.redirect('/login');
 });
 
 app.listen(PORT, () => {
