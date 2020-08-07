@@ -1,5 +1,5 @@
 const checkForUserByEmail = (email, database) => {
-  for (let userId in database) {
+  for (const userId in database) {
     if (database[userId].email === email) {
       console.log(database[userId]);
       return database[userId];
@@ -9,7 +9,7 @@ const checkForUserByEmail = (email, database) => {
 };
 
 const checkForEmailInDatabase = (email, database) => {
-  for (let userId in database) {
+  for (const userId in database) {
     if (database[userId].email === email) {
       return true;
     }
@@ -17,12 +17,11 @@ const checkForEmailInDatabase = (email, database) => {
   return false;
 };
 
-
 const getUserByEmail = (email, database) => {
   if (email === null) {
     return undefined;
   } else {
-    for (let userId in database) {
+    for (const userId in database) {
       if (database[userId].email === email) {
         console.log(database[userId]);
         return database[userId].id;
@@ -32,12 +31,7 @@ const getUserByEmail = (email, database) => {
 };
 
 const generateRandomString = () => {
-  let randomStr = "";
-  const characters = "ABCDEFGHIJKLMNOPQRSTOUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz";
-  for (let i = 0; i < 6; i++) {
-    randomStr += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return randomStr;
+  return Math.random().toString(36).substr(2, 6);
 };
 
 const urlsForUserID = (ID, database) => {
@@ -53,4 +47,12 @@ const urlsForUserID = (ID, database) => {
   return userURLs;
 };
 
-module.exports = { checkForUserByEmail, getUserByEmail, generateRandomString, urlsForUserID, checkForEmailInDatabase };
+
+/* FOR STRETCH */
+const timeStamp = () => {
+  const [date] = (new Date()).toLocaleDateString().split("/");
+  return date;
+};
+
+
+module.exports = { checkForUserByEmail, getUserByEmail, generateRandomString, urlsForUserID, checkForEmailInDatabase, timeStamp };

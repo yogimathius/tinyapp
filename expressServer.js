@@ -2,23 +2,24 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
-const { checkForUserByEmail, checkForEmailInDatabase, generateRandomString, urlsForUserID } = require('./helpers');
-app.use(cookieParser());
+const methodOverride = require('method-override');
+
+const { checkForUserByEmail, checkForEmailInDatabase, generateRandomString, urlsForUserID, timeStamp } = require('./helpers');
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2']
 }));
 
+app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
 
 
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW", timeCreated: [ 'Fri Aug 07 2020 04:22:56 GMT+0000 (UTC)' ] },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW", timeCreated: [ 'Fri Aug 07 2020 04:22:56 GMT+0000 (UTC)' ] }
 };
 
 const users = {
@@ -41,8 +42,6 @@ app.get('/urls', (req, res) => {
     res.redirect('/login');
     return;
   }
-  console.log('user in urls', user);
-  console.log('user id: ', req.session.user_id);
   const filteredURLS = urlsForUserID(req.session.user_id, urlDatabase);
   let templateVars = {
     urls: filteredURLS,
@@ -53,14 +52,17 @@ app.get('/urls', (req, res) => {
 
 app.post('/urls', (req, res) => {
   const userID = req.session.user_id;
-
+  /* FOR STRETCH */
+  // const urlTimeStamp = timeStamp();
+  // console.log("time stamp is:", urlTimeStamp);
   const longURL = req.body.longURL;
   const shortURL = generateRandomString();
-  urlDatabase[shortURL] = {longURL, userID};
+  urlDatabase[shortURL] = {longURL, userID,};
+  console.log(urlDatabase[shortURL]);
   res.redirect(303, `/urls/${shortURL}`);
 });
 
-app.post('/urls/:shortURL/delete', (req, res) => {
+app.delete('/urls/:shortURL/', (req, res) => {
   if (req.session.user_id === urlDatabase[req.params.shortURL].userID) {
     delete urlDatabase[req.params.shortURL];
     res.redirect(302, '/urls');
@@ -69,14 +71,13 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   }
 });
 
-app.post('/urls/:shortURL/edit', (req, res) => {
+app.post('/urls/:shortURL/', (req, res) => {
   const shortURL = req.params.shortURL;
   if (shortURL) {
     if (req.session.user_id === urlDatabase[req.params.shortURL].userID) {
       const editFromUser = req.body.longURL;
-      console.log('editFromUser', editFromUser);
       urlDatabase[shortURL].longURL = editFromUser;
-      res.redirect(303, '/urls/');
+      res.redirect('/urls/');
     } else {
       res.status(400).send('<h1>Unable to access this data. Please login with the valid credentials to view this page.<h1>');
     }
@@ -111,7 +112,7 @@ app.get('/urls/:shortURL', (req, res) => {
 });
 
 app.get('/u/:shortURL', (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(302, longURL);
 });
 	
@@ -138,10 +139,8 @@ app.post('/register', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const userID = generateRandomString();
-  const user = users[req.session.user_id];
   const userDB = checkForEmailInDatabase(email, users);
 
-  console.log("db user: ", userDB);
   if (!email || !password) {
     res.status(400).send('<h1>Email or Password fields cannot be left blank.</h1>');
   } else if (userDB === true) {

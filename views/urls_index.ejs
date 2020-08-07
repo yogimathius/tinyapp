@@ -22,32 +22,41 @@
 					<th scope="col">Long URL</th>
 					<th>Edit</th>
 					<th>Delete</th>
+					<!-- FOR STRETCH -->
+					<!-- <th>Time Created</th> -->
 				</tr>
 			</thead>
 			<tbody>
-				<% for(let url in urls) { %>
+				<% for(const url in urls) { %>
 				<tr>
 					<% if (!user) { %>
 					<td>Login to View</td>
 					<td>Login to Edit</td>
 					<td>Login to Delete</td>
 					<% } else { %>
-					<td><a href="<%= urls[url].longURL %>"><%= url %></a></td>
-					<td><%= urls[url].longURL %></td>
+					<td><a href=“/u/<%= shortURL %>"><%= url %></a></td>
 					<td>
-						<a href="/urls/<%= url %>/">edit</a>
+						<form action=""></form>
+						<%= urls[url].longURL %>
+					</td>
+					<td>
+						<a href="/urls/<%= url %>/?_method=put">edit</a>
 					</td>
 
 					<td>
-						<form method="POST" action="/urls/<%= url %>/delete"><button class="btn btn-outline-danger">Delete</button>
+						<form method="POST" action="/urls/<%= url %>/?_method=DELETE"><button
+								class="btn btn-outline-danger">Delete</button>
 						</form>
 					</td>
+					<!-- FOR STRETCH -->
+					<!-- <td><%= urls[url].urlTimeStamp %></td> -->
 					<% } %>
 				</tr>
 				<% } %>
 			</tbody>
 		</table>
-		<form class="form-inline" method="GET" action="/urls/new"> <button class="btn btn-primary">Create a New Shortened
+		<form class="form-inline d-flex justify-content-center" method="GET" action="/urls/new"> <button
+				class="btn btn-primary">Create a New Shortened
 				Url</button>
 		</form>
 	</main>
