@@ -27,7 +27,6 @@
 			<tbody>
 				<% for(let url in urls) { %>
 				<tr>
-					<td><a href="<%= urls[url].longURL %>"><%= url %></a></td>
 					<% if (!user) { %>
 					<td>Login to View</td>
 					<td>Login to Edit</td>
@@ -48,7 +47,7 @@
 				<% } %>
 			</tbody>
 		</table>
-		<form class="form-inline" method="GET" action="/urls/new"> <button class="btn btn-primary">Shorten
+		<form class="form-inline" method="GET" action="/urls/new"> <button class="btn btn-primary">Create a New Shortened
 				Url</button>
 		</form>
 	</main>
