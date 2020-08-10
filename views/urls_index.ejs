@@ -34,11 +34,9 @@
 					<td>Login to Edit</td>
 					<td>Login to Delete</td>
 					<% } else { %>
-					<td><a href=“/u/<%= shortURL %>"><%= url %></a></td>
-					<td>
-						<form action=""></form>
-						<%= urls[url].longURL %>
-					</td>
+
+					<td><a href="/u/<%=url%>"><%= url %></a></td>
+					<td><%= urls[url].longURL %></td>
 					<td>
 						<a href="/urls/<%= url %>/?_method=put">edit</a>
 					</td>
