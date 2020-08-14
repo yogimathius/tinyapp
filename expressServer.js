@@ -35,6 +35,16 @@ const users = {
   }
 };
 
+const siteAnalytics = {
+  "shortURL": {
+    siteVisits: "",
+    uniqueVisitors: "",
+    eachVisit: {
+      timestamp: "",
+      ID: ""
+    }
+  }
+};
 
 app.get('/urls', (req, res) => {
   const user = users[req.session.user_id];
@@ -53,8 +63,8 @@ app.get('/urls', (req, res) => {
 app.post('/urls', (req, res) => {
   const userID = req.session.user_id;
   /* FOR STRETCH */
-  // const urlTimeStamp = timeStamp();
-  // console.log("time stamp is:", urlTimeStamp);
+  const urlTimeStamp = timeStamp();
+  console.log("time stamp is:", urlTimeStamp);
   const longURL = req.body.longURL;
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = {longURL, userID,};
@@ -73,6 +83,7 @@ app.delete('/urls/:shortURL/', (req, res) => {
 
 app.post('/urls/:shortURL/', (req, res) => {
   const shortURL = req.params.shortURL;
+  
   if (shortURL) {
     if (req.session.user_id === urlDatabase[req.params.shortURL].userID) {
       const editFromUser = req.body.longURL;
@@ -84,6 +95,7 @@ app.post('/urls/:shortURL/', (req, res) => {
   } else {
     res.status(400).send('<h1>Url does not exist!<h1>');
   }
+
 });
 
 app.get('/urls/new', (req, res) => {
@@ -103,7 +115,8 @@ app.get('/urls/:shortURL', (req, res) => {
     let templateVars = {
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL].longURL,
-      user
+      user,
+      siteAnalytics
     };
     res.render('urls_show', templateVars);
   } else {
@@ -113,6 +126,17 @@ app.get('/urls/:shortURL', (req, res) => {
 
 app.get('/u/:shortURL', (req, res) => {
   const longURL = urlDatabase[req.params.shortURL].longURL;
+  const urlTimeStamp = timeStamp();
+  const shortURL = req.params.shortURL;
+  const userID = req.session.user_id;
+  siteAnalytics[shortURL] = {
+    uniqueVisitors: userID,
+    eachVisit: {
+      timeStamp: urlTimeStamp,
+      userID: userID
+    }
+  };
+  console.log("site analytics: ", siteAnalytics);
   res.redirect(302, longURL);
 });
 	

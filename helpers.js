@@ -1,3 +1,5 @@
+// RETURNS A USER ID BY EMAIL PROVIDED IN THE REQ.BODY OR ELSEWHERE
+
 const checkForUserByEmail = (email, database) => {
   for (const userId in database) {
     if (database[userId].email === email) {
@@ -8,6 +10,7 @@ const checkForUserByEmail = (email, database) => {
   return false;
 };
 
+// CHECKS FOR AN EMAIL IN THE USER DATABASE, RETURNS TRUE OR FALSE
 const checkForEmailInDatabase = (email, database) => {
   for (const userId in database) {
     if (database[userId].email === email) {
@@ -17,6 +20,7 @@ const checkForEmailInDatabase = (email, database) => {
   return false;
 };
 
+// RETURNS FULL OBJECT OF USER IN USER DATABASE, BY EMAIL
 const getUserByEmail = (email, database) => {
   if (email === null) {
     return undefined;
@@ -30,10 +34,12 @@ const getUserByEmail = (email, database) => {
   }
 };
 
+// RANDOM STRING GENERATOR FOR CREATING USER IDS AND SHORTURLS (6 CHARACTERS LONG)
 const generateRandomString = () => {
   return Math.random().toString(36).substr(2, 6);
 };
 
+// FILTERS URLS IN THE URL DATABASE BY THE USER ID IT BELONGS TO
 const urlsForUserID = (ID, database) => {
   let userURLs = {};
   for (let url in database) {
@@ -49,10 +55,13 @@ const urlsForUserID = (ID, database) => {
 
 
 /* FOR STRETCH */
+
+// CREATES A TIMESTAMP TO TRACK WHEN URLS ARE CREATED, OR WHEN VISITORS HAVE GONE TO CERTAIN SHORTURLS
 const timeStamp = () => {
-  const [date] = (new Date()).toLocaleDateString().split("/");
-  return date;
+  let date = new Date(Date.now());
+  return date.toLocaleString('en-GB', { hour12:false });
 };
 
+console.log(timeStamp());
 
 module.exports = { checkForUserByEmail, getUserByEmail, generateRandomString, urlsForUserID, checkForEmailInDatabase, timeStamp };
